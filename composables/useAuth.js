@@ -1,14 +1,14 @@
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import { useNuxtApp } from '#app'; // Ensure correct import
 import { useRouter } from 'vue-router';
 
 export const useAuth = () => {
-  const { $supabase } = useNuxtApp();
+  const { $supabase } = useNuxtApp(); // Correctly get Supabase from Nuxt context
   const router = useRouter();
 
   const user = ref(null);
   const session = ref(null);
 
-  // ✅ Load session on app start
   const loadSession = async () => {
     console.log("Loading session...");
     const { data, error } = await $supabase.auth.getSession();
@@ -21,7 +21,6 @@ export const useAuth = () => {
     console.log("User loaded:", user.value);
   };
 
-  // ✅ Sign in user
   const signInWithEmail = async (email, password) => {
     console.log("Signing in with:", email);
     const { data, error } = await $supabase.auth.signInWithPassword({ email, password });
@@ -33,12 +32,9 @@ export const useAuth = () => {
 
     console.log("Sign-in successful!", data);
     user.value = data.user;
-
-    // ✅ Redirect to home
-    router.push('/');
+    router.push('/'); // Redirect to home after sign-in
   };
 
-  // ✅ Sign out user
   const signOut = async () => {
     console.log("Signing out...");
     await $supabase.auth.signOut();
@@ -47,14 +43,12 @@ export const useAuth = () => {
     router.push('/login');
   };
 
-  // 🔄 Handle auth state changes
+  // Handle auth state changes
   $supabase.auth.onAuthStateChange((event, sessionData) => {
     console.log("Auth state changed:", event, sessionData);
     session.value = sessionData;
     user.value = sessionData?.user ?? null;
   });
 
-  onMounted(loadSession);
-
-  return { user, session, signInWithEmail, signOut };
+  return { user, session, signInWithEmail, signOut, loadSession }; // Return loadSession for use in components
 };

@@ -17,16 +17,21 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useAuth } from '~/composables/useAuth';
-  import { useRouter } from 'vue-router'; // Import useRouter for navigation
+  import { useRouter } from 'vue-router';
   
-  const { user, signInWithEmail, signOut } = useAuth();
-  const router = useRouter(); // Get the router instance
+  const { user, signInWithEmail, signOut, loadSession, signUpWithEmail: signUp } = useAuth();
+  const router = useRouter();
   const email = ref('');
   const password = ref('');
   
-  // Replace the existing signIn function with this one
+  // Call loadSession inside onMounted
+  onMounted(() => {
+    loadSession(); // Load session on mount
+  });
+  
+  // Sign in logic
   const signIn = async () => {
     console.log("⚡ Attempting login...");
   
@@ -40,11 +45,33 @@
     try {
       await signInWithEmail(email.value, password.value);
       console.log("✅ Login function executed!");
-  
-      // Redirect to index after successful login
-      router.push('/'); // Redirect to the index page
+      router.push('/'); // Redirect to the index page after login
     } catch (error) {
       console.error("🚨 Login error:", error);
+    }
+  };
+  
+  // Sign up logic
+  const signUpWithEmail = async () => {
+    console.log("⚡ Attempting sign up...");
+  
+    if (!email.value || !password.value) {
+      console.error("❌ Missing email or password for sign up!");
+      return;
+    }
+  
+    console.log("📨 Sending sign-up request with:", email.value);
+  
+    try {
+      const { user, error } = await signUp(email.value, password.value);
+      if (error) {
+        console.error("🚨 Sign-up error:", error);
+        return;
+      }
+      console.log("✅ Sign-up successful! User:", user);
+      router.push('/'); // Redirect to the index page after sign up
+    } catch (error) {
+      console.error("🚨 Sign-up error:", error);
     }
   };
   </script>
