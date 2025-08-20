@@ -1,9 +1,8 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  const userCookie = useCookie('auth_user'); // Read stored auth state
-
-  // 🚨 Prevent infinite loop: If already on /login, don't redirect
-  // fairly certain this doesnt do anything since i am sure we are not storing any cookies
-  if (!userCookie.value && to.path !== '/login') {
-    return navigateTo('/login'); 
+// middleware/auth.global.js
+import { useSupabaseUser } from '#imports'
+export default defineNuxtRouteMiddleware((to) => {
+  const user = useSupabaseUser()
+  if (to.path !== '/login' && !user.value) {
+    return navigateTo('/login')
   }
-});
+})
