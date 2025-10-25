@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <!-- <template v-if="user">
+    <template v-if="user">
       <h1>Welcome, {{ displayName }}</h1>
       <p>Session Active ✅</p>
 
@@ -26,12 +26,12 @@
           <small>{{ user.email }}</small>
         </div>
       </div>
-    </template> -->
+    </template> 
 
-    <!-- <template v-else>
+    <template v-else>
       <!-- Render your login component -->
-      <!-- <Login /> -->
-    <!-- </template> -->
+      <Login />
+     </template>
   </div>
 </template>
 

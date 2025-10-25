@@ -1,16 +1,28 @@
 <template>
+  <div>
+    <div class="button-wrapper">
+      <NuxtLink to="/add-hero" class="hero-btn">
+        Add Hero
+      </NuxtLink>
+    </div>  
+  </div>
   <div class="heroes-wrapper">
+    
     <div v-if="heroes?.length" class="heroes-grid">
       <div v-for="hero in heroes" :key="hero.id" class="hero-card">
-        <img
-          class="hero-image"
-          :src="`https://hygntnfplvvzghgwlenn.supabase.co/storage/v1/object/public/images/${hero.img}`"
-          :alt="hero.name"
-        />
-        <div class="hero-details">
-          <h2>{{ hero.name }}</h2>
-          <p>{{ hero.description || 'No description available.' }}</p>
-          <button class="hero-btn">View more</button>
+        <!-- background image layer -->
+        <div
+          class="hero-bg"
+          :style="{
+            backgroundImage: `url('https://hygntnfplvvzghgwlenn.supabase.co/storage/v1/object/public/images/${hero.img}')`
+          }"
+        ></div>
+
+        <!-- glass overlay -->
+        <div class="hero-overlay">
+          <h2 class="hero-name">{{ hero.name }}</h2>
+          <p class="hero-desc">{{ hero.description || 'No description available.' }}</p>
+          <NuxtLink :to="`/heroView/${hero.id}`" class="hero-btn"> View Hero Details </NuxtLink>
         </div>
       </div>
     </div>
@@ -29,17 +41,17 @@ const { data: heroes, error } = await useAsyncData('heroesList', async () => {
 </script>
 
 <style scoped>
-/* Outer page container */
+/* page container */
 .heroes-wrapper {
-  /* background-color: #0e0e0e; */
   min-height: 100vh;
   padding: 2rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  background: radial-gradient(circle at top left, #0a0a0a 0%, #141414 100%);
 }
 
-/* Grid layout for cards */
+/* grid */
 .heroes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -48,65 +60,80 @@ const { data: heroes, error } = await useAsyncData('heroesList', async () => {
   max-width: 1200px;
 }
 
-/* Card styling */
+/* base card */
 .hero-card {
-  background-color: #ffffff;
-  border-radius: 16px;
+  position: relative;
+  height: 300px;
   overflow: hidden;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
+  border-radius: 16px;
+  cursor: pointer;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .hero-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 }
 
-/* Hero image */
-.hero-image {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
+/* blurred background image */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.6) blur(2px);
+  transform: scale(1.1);
+  transition: transform 0.4s ease;
+}
+.hero-card:hover .hero-bg {
+  transform: scale(1.15);
 }
 
-/* Text area */
-.hero-details {
-  padding: 1rem 1.2rem;
+/* glass overlay content */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-}
-.hero-details h2 {
-  font-size: 1.1rem;
-  color: #111;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-}
-.hero-details p {
-  color: #444;
-  font-size: 0.9rem;
-  margin-bottom: 0.8rem;
+  justify-content: flex-end;
+  padding: 1.2rem;
+  color: #fff;
 }
 
-/* Button */
+/* text */
+.hero-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+.hero-desc {
+  font-size: 0.9rem;
+  margin: 0.4rem 0 0.8rem 0;
+  opacity: 0.9;
+}
+
+/* button */
 .hero-btn {
-  background-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.85);
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 0.5rem 0;
+  border-radius: 8px;
+  padding: 0.55rem 0;
   font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.25s ease;
+  width: 100%;
+  transition: background-color 0.25s ease, transform 0.2s ease;
 }
 .hero-btn:hover {
-  background-color: #0056cc;
+  background-color: #007bff;
+  transform: translateY(-1px);
 }
 
-/* Empty message */
+/* empty state */
 .empty-message {
   color: #ccc;
   font-size: 1.1rem;
@@ -114,4 +141,38 @@ const { data: heroes, error } = await useAsyncData('heroesList', async () => {
   width: 100%;
   margin-top: 2rem;
 }
+
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Button style */
+.hero-btn {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+  transition: all 0.25s ease;
+}
+
+.hero-btn:hover {
+  background-color: #0056cc;
+  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.hero-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
 </style>

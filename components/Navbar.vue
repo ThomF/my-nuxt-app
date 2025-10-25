@@ -8,12 +8,6 @@
       <NuxtLink to="/heroes" class="link">Hero Registry</NuxtLink>
     </div>
 
-    <div class="button-wrapper">
-      <NuxtLink to="/add-hero" class="hero-btn">
-        Add Hero
-      </NuxtLink>
-    </div>  
-
     <div class="right" v-if="user">
       <div class="avatar-wrap" @click="toggleMenu">
         <img
@@ -141,38 +135,6 @@ const logout = async () => {
   padding: 8px 14px; border-radius: 10px; cursor: pointer;
 }
 .login-button:hover { background: #2563eb; }
-
-.button-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-/* Button style */
-.hero-btn {
-  display: inline-block;
-  background-color: #007bff;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  font-weight: 600;
-  text-decoration: none;
-  font-size: 1rem;
-  letter-spacing: 0.5px;
-  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
-  transition: all 0.25s ease;
-}
-
-.hero-btn:hover {
-  background-color: #0056cc;
-  box-shadow: 0 6px 16px rgba(0, 123, 255, 0.45);
-  transform: translateY(-2px);
-}
-
-.hero-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-}
 
 
 </style>
