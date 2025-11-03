@@ -3,9 +3,10 @@
     <div class="left">
       <NuxtLink to="/" class="brand">MyApp</NuxtLink>
       <NuxtLink to="/" class="link">Home</NuxtLink>
+      <NuxtLink to="/heroes" class="link">Hero Registry</NuxtLink>
+
       <NuxtLink to="/about" class="link">About</NuxtLink>
       <NuxtLink to="/account" class="link">Account</NuxtLink>
-      <NuxtLink to="/heroes" class="link">Hero Registry</NuxtLink>
     </div>
 
     <div class="right" v-if="user">
