@@ -56,32 +56,43 @@ function handleHeroAdded(newHero){
 </script>
 
 <style scoped>
-/* GENERAL LAYOUT FIXES */
+/* RESET / GENERAL */
 body, html {
-  overflow-x: hidden;
   margin: 0;
   padding: 0;
-  background-color: #0a0a0a;
+  overflow-x: hidden;
 }
 
-/* HEADER */
+/* ✅ HERO HEADER — full bleed to edges, no gap */
 .hero-header {
-  background-color: #5a8cc23e;
-  padding: 1rem 0;
-  color: #fff;
   position: sticky;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  left: 0;
+  z-index: 90;
+
+  /* Full width flush edge-to-edge */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  /* Glass + border style */
+  background: rgba(35, 60, 100, 0.35);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* Padding / layout */
+  padding: 0.75rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
+/* ✅ Inner header keeps content centered */
 .hero-header-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  width: 100%;
 }
 
 .page-title {
@@ -90,7 +101,6 @@ body, html {
   font-weight: 700;
 }
 
-/* HEADER BUTTON */
 .hero-btn {
   background-color: #0056cc;
   color: white;
@@ -102,88 +112,91 @@ body, html {
   box-shadow: 0 3px 8px rgba(0, 123, 255, 0.4);
   transition: all 0.25s ease;
 }
-
 .hero-btn:hover {
   background-color: #004bb3;
   transform: translateY(-2px);
 }
 
-.hero-btn:active {
-  transform: translateY(1px);
-}
-
-/* HERO SECTION */
+/* ✅ MAIN GRID AREA */
 .heroes-wrapper {
   min-height: 100vh;
   padding: 3rem 1.5rem;
   display: flex;
   justify-content: center;
-  background: radial-gradient(circle at top left, #0a0a0a 0%, #141414 100%);
+  background: transparent;
 }
 
 .heroes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.75rem;
+  gap: 2rem;
   width: 100%;
   max-width: 1200px;
 }
 
-/* HERO CARD */
+/* ✅ HERO CARD */
 .hero-card {
   position: relative;
-  height: 300px;
+  height: 320px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  transform: translateY(0) scale(1);
+  transition: 
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    background 0.35s ease;
   cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+/* ✨ Floating lift + pickup visual */
 .hero-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+  transform: translateY(-12px) scale(1.05);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 2;
 }
 
+/* Background image */
 .hero-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: brightness(0.6) blur(2px);
-  transform: scale(1.1);
-  transition: transform 0.4s ease;
+  filter: brightness(0.6);
+  transition: filter 0.4s ease;
 }
-
 .hero-card:hover .hero-bg {
-  transform: scale(1.15);
+  filter: brightness(0.8);
 }
 
+/* Glass overlay content */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 1.25rem;
   color: #fff;
+  z-index: 1;
 }
 
 .hero-name {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
 }
-
 .hero-desc {
   font-size: 0.9rem;
   margin: 0.4rem 0 0.8rem;
   opacity: 0.9;
 }
 
-/* CARD BUTTON */
 .hero-card-btn {
   background-color: rgba(97, 117, 139, 0.85);
   color: #fff;
@@ -196,18 +209,21 @@ body, html {
   width: 100%;
   transition: background-color 0.25s ease, transform 0.2s ease;
 }
-
 .hero-card-btn:hover {
   background-color: #2089fa;
   transform: translateY(-1px);
 }
 
-/* EMPTY STATE */
-.empty-message {
-  color: #ccc;
-  font-size: 1.1rem;
-  text-align: center;
-  width: 100%;
-  margin-top: 3rem;
+/* Fade-in for cards */
+.hero-card {
+  animation: fadeIn 0.6s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
+
+
+
+
